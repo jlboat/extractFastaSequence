@@ -1,0 +1,42 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'application'
+
+
+mainClassName = 'extractFastaSequence.Main'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'commons-cli:commons-cli:1.4'
+    testImplementation 'junit:junit:4.12'
+}
+
+jacoco {
+    toolVersion = "0.8.3"
+    reportsDir = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled true
+        html.enabled true
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+      'Main-Class': 'Faidx.Faidx'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+
